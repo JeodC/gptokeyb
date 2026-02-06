@@ -45,6 +45,7 @@ bool sudo_kill = false; //allow sudo kill instead of killall for non-emuelec sys
 bool pckill_mode = false; //emit alt+f4 to close apps on pc during kill mode, if env variable is set
 bool openbor_mode = false;
 bool xbox360_mode = false;
+bool invert_axis = false;
 bool verbose = false;
 bool textinputpreset_mode = false; 
 bool textinputinteractive_mode = false;
@@ -248,6 +249,12 @@ int main(int argc, char* argv[])
         } 
     }
 
+    if (char* env_invert = SDL_getenv("GPTOKEYB_INVERT_DPAD")) {
+        if (strcmp(env_invert, "1") == 0 || strcmp(env_invert, "Y") == 0) {
+            invert_axis = true;
+            printf("[GPTK]: Axis inversion enabled\n");
+        }
+    }
 
     // SDL initialization and main loop
     if (SDL_Init(SDL_INIT_GAMECONTROLLER | SDL_INIT_TIMER) != 0) {

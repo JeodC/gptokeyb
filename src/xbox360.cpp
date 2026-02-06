@@ -39,6 +39,8 @@
 
 #ifndef USE_X11
 
+extern bool invert_axis;
+
 void UINPUT_SET_ABS_P(
     uinput_user_dev* dev,
     int axis,
@@ -163,19 +165,19 @@ void handleEventBtnFakeXbox360Device(const SDL_Event &event, bool is_pressed)
         break;
 
     case SDL_CONTROLLER_BUTTON_DPAD_UP:
-        emitAxisMotion(ABS_HAT0Y, is_pressed ? -1 : 0);
+        emitAxisMotion(ABS_HAT0Y, is_pressed ? (invert_axis ? 1 : -1) : 0);
         break;
 
     case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
-        emitAxisMotion(ABS_HAT0Y, is_pressed ? 1 : 0);
+        emitAxisMotion(ABS_HAT0Y, is_pressed ? (invert_axis ? -1 : 1) : 0);
         break;
 
     case SDL_CONTROLLER_BUTTON_DPAD_LEFT:
-        emitAxisMotion(ABS_HAT0X, is_pressed ? -1 : 0);
+        emitAxisMotion(ABS_HAT0X, is_pressed ? (invert_axis ? 1 : -1) : 0);
         break;
 
     case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
-        emitAxisMotion(ABS_HAT0X, is_pressed ? 1 : 0);
+        emitAxisMotion(ABS_HAT0X, is_pressed ? (invert_axis ? -1 : 1) : 0);
         break;
     }
 
