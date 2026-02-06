@@ -165,19 +165,39 @@ void handleEventBtnFakeXbox360Device(const SDL_Event &event, bool is_pressed)
         break;
 
     case SDL_CONTROLLER_BUTTON_DPAD_UP:
-        emitAxisMotion(ABS_HAT0Y, is_pressed ? (invert_axis ? 1 : -1) : 0);
+        state.dpad_up_pressed = is_pressed;
+        if (is_pressed) {
+            emitAxisMotion(ABS_HAT0Y, invert_axis ? 1 : -1);
+        } else if (!state.dpad_down_pressed) {
+            emitAxisMotion(ABS_HAT0Y, 0);
+        }
         break;
 
     case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
-        emitAxisMotion(ABS_HAT0Y, is_pressed ? (invert_axis ? -1 : 1) : 0);
+        state.dpad_down_pressed = is_pressed;
+        if (is_pressed) {
+            emitAxisMotion(ABS_HAT0Y, invert_axis ? -1 : 1);
+        } else if (!state.dpad_up_pressed) {
+            emitAxisMotion(ABS_HAT0Y, 0);
+        }
         break;
 
     case SDL_CONTROLLER_BUTTON_DPAD_LEFT:
-        emitAxisMotion(ABS_HAT0X, is_pressed ? (invert_axis ? 1 : -1) : 0);
+        state.dpad_left_pressed = is_pressed;
+        if (is_pressed) {
+            emitAxisMotion(ABS_HAT0X, invert_axis ? 1 : -1);
+        } else if (!state.dpad_right_pressed) {
+            emitAxisMotion(ABS_HAT0X, 0);
+        }
         break;
 
     case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
-        emitAxisMotion(ABS_HAT0X, is_pressed ? (invert_axis ? -1 : 1) : 0);
+        state.dpad_right_pressed = is_pressed;
+        if (is_pressed) {
+            emitAxisMotion(ABS_HAT0X, invert_axis ? -1 : 1);
+        } else if (!state.dpad_left_pressed) {
+            emitAxisMotion(ABS_HAT0X, 0);
+        }
         break;
     }
 
