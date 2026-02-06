@@ -172,38 +172,3 @@ jobs:
         with:
           name: gptokeyb-complete-bundle
           path: staging/*
-
-      # ----------------------------------------------------------------
-      # Release Logic (Manual Only)
-      # ----------------------------------------------------------------
-      
-      - name: Generate Version and Changelog
-        if: github.event_name == 'workflow_dispatch'
-        id: vars
-        run: |
-          VERSION=$(date +'%Y.%m.%d-%H%M')
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          
-          echo "Generating changelog..."
-          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-          
-          if [ -z "$LAST_TAG" ]; then
-            echo "## Initial Release or No Tags Found" > release_notes.txt
-            echo "" >> release_notes.txt
-            git log -n 10 --pretty=format:"- %h %s" >> release_notes.txt
-          else
-            echo "## Changes since $LAST_TAG" > release_notes.txt
-            echo "" >> release_notes.txt
-            git log ${LAST_TAG}..HEAD --pretty=format:"- %h %s" >> release_notes.txt
-          fi
-
-      - name: Create GitHub Release
-        if: github.event_name == 'workflow_dispatch'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release create ${{ env.VERSION }} \
-            gptokeyb-all.zip \
-            --title "gptokeyb ${{ env.VERSION }}" \
-            --notes-file release_notes.txt \
-            --target ${{ github.sha }}
