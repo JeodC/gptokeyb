@@ -117,6 +117,10 @@ struct GptokeybState
     int current_right_analog_y = 0;
     int current_l2 = 0;
     int current_r2 = 0;
+    bool dpad_up_pressed = false;
+    bool dpad_down_pressed = false;
+    bool dpad_left_pressed = false;
+    bool dpad_right_pressed = false;
     bool hotkey_pressed = false; // current state of hotkey
     bool hotkey_was_pressed = false; // indicates hotkey button has been pressed, and key may need to be processed on button's release, if hotkey combo isn't triggered
     bool start_pressed = false;

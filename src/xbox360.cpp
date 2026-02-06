@@ -97,6 +97,20 @@ int setupFakeXbox360Device(uinput_user_dev& device, int fd)
     return 0;
 }
 
+void updateDpadAxis() {
+    int x = 0;
+    int y = 0;
+
+    if (state.dpad_left_pressed)  x -= 1;
+    if (state.dpad_right_pressed) x += 1;
+    if (state.dpad_up_pressed)    y -= 1;
+    if (state.dpad_down_pressed)  y += 1;
+
+    if (invert_axis) { x = -x; y = -y; }
+
+    emitAxisMotion(ABS_HAT0X, x);
+    emitAxisMotion(ABS_HAT0Y, y);
+}
 
 void handleEventBtnFakeXbox360Device(const SDL_Event &event, bool is_pressed)
 {
@@ -164,21 +178,10 @@ void handleEventBtnFakeXbox360Device(const SDL_Event &event, bool is_pressed)
         }
         break;
 
-    case SDL_CONTROLLER_BUTTON_DPAD_UP:
-        emitAxisMotion(ABS_HAT0Y, is_pressed ? (invert_axis ? 1 : -1) : 0);
-        break;
-
-    case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
-        emitAxisMotion(ABS_HAT0Y, is_pressed ? (invert_axis ? -1 : 1) : 0);
-        break;
-
-    case SDL_CONTROLLER_BUTTON_DPAD_LEFT:
-        emitAxisMotion(ABS_HAT0X, is_pressed ? (invert_axis ? 1 : -1) : 0);
-        break;
-
-    case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
-        emitAxisMotion(ABS_HAT0X, is_pressed ? (invert_axis ? -1 : 1) : 0);
-        break;
+        case SDL_CONTROLLER_BUTTON_DPAD_UP:    state.dpad_up_pressed = is_pressed;    updateDpadAxis(); break;
+        case SDL_CONTROLLER_BUTTON_DPAD_DOWN:  state.dpad_down_pressed = is_pressed;  updateDpadAxis(); break;
+        case SDL_CONTROLLER_BUTTON_DPAD_LEFT:  state.dpad_left_pressed = is_pressed;  updateDpadAxis(); break;
+        case SDL_CONTROLLER_BUTTON_DPAD_RIGHT: state.dpad_right_pressed = is_pressed; updateDpadAxis(); break;
     }
 
     if ((kill_mode) && (state.start_pressed && state.hotkey_pressed)) {
